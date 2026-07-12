@@ -1,10 +1,14 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
+import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
+import 'package:elitestate/view/home/home.dart';
+import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -83,7 +87,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
 
                   30.verticalSpace,
-                  CustomButton(text: "CREATE ACCOUNT", onPressed: () {}),
+                  CustomButton(
+                    text: "CREATE ACCOUNT",
+                    onPressed: () async {
+                      try {
+                        await context.read<AuthViewModel>().signup(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
+                        nameController.clear();
+                        emailController.clear();
+                        passwordController.clear();
+                        Get.to(BottomNavScreen());
+                      } catch (e) {
+                        Get.snackbar(
+                          "error",
+                          e.toString(),
+                          colorText: Colors.white,
+                        );
+                      }
+                    },
+                  ),
                   10.verticalSpace,
                   Row(
                     children: [

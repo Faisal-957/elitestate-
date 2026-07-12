@@ -1,4 +1,4 @@
-import 'package:elitestate/ui/auth/registed_screen.dart';
+import 'package:elitestate/view/auth/registed_screen.dart';
 import 'package:flutter/material.dart';
 
 class Splashscreen extends StatefulWidget {
