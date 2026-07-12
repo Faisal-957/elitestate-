@@ -1,7 +1,10 @@
+import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
+import 'package:elitestate/view_model/auth_viewmodel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:provider/provider.dart';
@@ -16,53 +19,120 @@ class Addproperty extends StatelessWidget {
   final areaController = TextEditingController();
   Addproperty({super.key});
 
+  Widget _sectionLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, left: 2),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 13.sp,
+          color: golden,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.black,
-
+      backgroundColor: blackColor,
+      appBar: AppBar(
+        backgroundColor: blackColor,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          "Add Property",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Image.asset("assets/images/logo3.png", scale: 3)),
+                Center(child: Image.asset("assets/images/logo3.png", scale: 4)),
+                10.verticalSpace,
+                Text(
+                  "List Your Property",
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                6.verticalSpace,
+                Text(
+                  "Fill in the details below to publish your listing",
+                  style: TextStyle(fontSize: 13.sp, color: Colors.white70),
+                ),
+                20.verticalSpace,
 
+                _sectionLabel("PROPERTY TITLE"),
                 CustomTextFormField(
                   controller: titleController,
-                  hintText: "Title",
+                  hintText: "e.g. Modern 3 Bed Villa",
+                  prefixIcon: Icons.home_work_outlined,
                 ),
-                10.verticalSpace,
+                16.verticalSpace,
+
+                _sectionLabel("LOCATION"),
                 CustomTextFormField(
                   controller: locationController,
-                  hintText: "location",
+                  hintText: "e.g. Karachi, Pakistan",
+                  prefixIcon: Icons.location_on_outlined,
                 ),
-                10.verticalSpace,
+                16.verticalSpace,
 
+                _sectionLabel("PRICE"),
                 CustomTextFormField(
                   controller: priceController,
-                  hintText: "price",
+                  hintText: "Enter price",
+                  prefixIcon: Icons.attach_money,
+                  keyboardType: TextInputType.number,
                 ),
-                10.verticalSpace,
+                20.verticalSpace,
 
-                CustomTextFormField(
-                  controller: bedroomController,
-                  hintText: "bedroom",
+                _sectionLabel("PROPERTY DETAILS"),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextFormField(
+                        controller: bedroomController,
+                        hintText: "Bedrooms",
+                        prefixIcon: Icons.bed_outlined,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    Expanded(
+                      child: CustomTextFormField(
+                        controller: bathroomController,
+                        hintText: "Bathrooms",
+                        prefixIcon: Icons.bathtub_outlined,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
                 ),
-                10.verticalSpace,
-
-                CustomTextFormField(
-                  controller: bathroomController,
-                  hintText: "bathroom",
-                ),
-                10.verticalSpace,
+                16.verticalSpace,
 
                 CustomTextFormField(
                   controller: areaController,
-                  hintText: "area",
+                  hintText: "Area (sqft)",
+                  prefixIcon: Icons.square_foot_outlined,
+                  keyboardType: TextInputType.number,
                 ),
-                10.verticalSpace,
+                28.verticalSpace,
+
                 CustomButton(
                   text: "Add Property",
                   onPressed: () async {
@@ -86,12 +156,13 @@ class Addproperty extends StatelessWidget {
                       );
                       return;
                     }
-
+                    print(FirebaseAuth.instance.currentUser?.uid);
                     final property = PropertyModel(
+                      ownerId: FirebaseAuth.instance.currentUser!.uid,
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       title: titleController.text,
                       location: locationController.text,
-
+                      ownername: context.read<AuthViewModel>().userName,
                       price: price,
                       bedrooms: bedrooms,
                       bathrooms: bathrooms,

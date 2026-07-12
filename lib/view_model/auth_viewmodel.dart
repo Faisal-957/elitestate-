@@ -5,12 +5,15 @@ class AuthViewModel extends ChangeNotifier {
   final AuthServices _services = AuthServices();
   bool isLoading = false;
   String userName = "";
+  String userEmail = "";
+
   Future<void> getUserData() async {
     try {
       final snapshot = await _services.getUserData();
 
       if (snapshot.exists) {
         userName = snapshot.data()?['name'] ?? "";
+        userEmail = snapshot.data()?['email'] ?? "";
         notifyListeners();
       }
     } catch (e) {
