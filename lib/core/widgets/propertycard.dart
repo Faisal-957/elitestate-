@@ -9,7 +9,7 @@ class PropertyCard extends StatelessWidget {
 
   const PropertyCard({super.key, required this.property, this.onTap});
 
-  String _formatPrice(double price) {
+  static String formatPrice(double price) {
     final value = price.toStringAsFixed(0);
     final buffer = StringBuffer();
     for (int i = 0; i < value.length; i++) {
@@ -83,24 +83,6 @@ class PropertyCard extends StatelessWidget {
                 ),
 
                 ///////////////////////////// Favorite icon//////////////////////////////
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.45),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      property.isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      size: 18,
-                      color: property.isFavorite ? primaryColor : whiteColor,
-                    ),
-                  ),
-                ),
 
                 /////////////////////////// Price tag/////////////////////////////////////
                 Positioned(
@@ -116,7 +98,7 @@ class PropertyCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      "\$${_formatPrice(property.price)}",
+                      "\PKR ${formatPrice(property.price)}",
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -172,7 +154,17 @@ class PropertyCard extends StatelessWidget {
                     children: [
                       Icon(Icons.person, size: 16, color: golden),
                       const SizedBox(width: 8),
-                      Expanded(child: _OwnerName(property: property)),
+                      Expanded(
+                        child: Text(
+                          property.ownerName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: greyColor,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   //////////// divider/////////////////////////////////
@@ -210,46 +202,46 @@ class PropertyCard extends StatelessWidget {
   }
 }
 
-class _OwnerName extends StatelessWidget {
-  final PropertyModel property;
+// class _OwnerName extends StatelessWidget {
+//   final PropertyModel property;
 
-  const _OwnerName({required this.property});
+//   const _OwnerName({required this.property});
 
-  static const _textStyle = TextStyle(
-    color: whiteColor,
-    fontSize: 13,
-    fontWeight: FontWeight.w600,
-  );
+//   static const _textStyle = TextStyle(
+//     color: whiteColor,
+//     fontSize: 13,
+//     fontWeight: FontWeight.w600,
+//   );
 
-  @override
-  Widget build(BuildContext context) {
-    if (property.ownername.isNotEmpty) {
-      return Text(
-        " ${property.ownername}",
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: _textStyle,
-      );
-    }
+//   @override
+//   Widget build(BuildContext context) {
+//     if (property.ownername.isNotEmpty) {
+//       return Text(
+//         " ${property.ownername}",
+//         maxLines: 1,
+//         overflow: TextOverflow.ellipsis,
+//         style: _textStyle,
+//       );
+//     }
 
-    if (property.ownerId.isEmpty) {
-      return const Text("Owner: Unknown", style: _textStyle);
-    }
+//     // if (property.ownerId.isEmpty) {
+//     //   return const Text("Owner: Unknown", style: _textStyle);
+//     // }
 
-    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      future: FirebaseFirestore.instance
-          .collection('users')
-          .doc(property.ownerId)
-          .get(),
-      builder: (context, snapshot) {
-        final name = snapshot.data?.data()?['name'] as String?;
-        return Text(
-          "Owner: ${name?.isNotEmpty == true ? name : 'Unknown'}",
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: _textStyle,
-        );
-      },
-    );
-  }
-}
+//     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+//       future: FirebaseFirestore.instance
+//           .collection('users')
+//           .doc(property.ownerId)
+//           .get(),
+//       builder: (context, snapshot) {
+//         final name = snapshot.data?.data()?['name'] as String?;
+//         return Text(
+//           "Owner: ${name?.isNotEmpty == true ? name : 'Unknown'}",
+//           maxLines: 1,
+//           overflow: TextOverflow.ellipsis,
+//           style: _textStyle,
+//         );
+//       },
+//     );
+//   }
+// }

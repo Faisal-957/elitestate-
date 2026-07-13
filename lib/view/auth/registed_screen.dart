@@ -51,10 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: TextStyle(fontSize: 15.sp, color: Colors.white),
                   ),
                   10.verticalSpace,
-                  Text(
-                    "FULL NAME ",
-                    style: TextStyle(fontSize: 15.sp, color: golden),
-                  ),
+                  Lable(title: "FULL NAME"),
                   10.verticalSpace,
 
                   CustomTextFormField(
@@ -63,10 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icons.person,
                   ),
                   10.verticalSpace,
-                  Text(
-                    "EMAIL ADDRESS ",
-                    style: TextStyle(fontSize: 15.sp, color: golden),
-                  ),
+                  Lable(title: "Email"),
                   10.verticalSpace,
                   CustomTextFormField(
                     controller: emailController,
@@ -74,10 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icons.email,
                   ),
                   10.verticalSpace,
-                  Text(
-                    "PASSWORD ",
-                    style: TextStyle(fontSize: 15.sp, color: golden),
-                  ),
+                  Lable(title: "PASSWORD"),
                   10.verticalSpace,
                   CustomTextFormField(
                     controller: passwordController,
@@ -171,6 +162,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class Lable extends StatelessWidget {
+  final String title;
+  Lable({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(fontSize: 15.sp, color: golden),
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'package:elitestate/core/constant/colors.dart';
+import 'package:elitestate/view/addproprety_screen/addproperty.dart';
 import 'package:elitestate/view/home/home.dart';
 import 'package:elitestate/view/profile_screen/profile_screen.dart';
-import 'package:elitestate/view/savescreen/addproperty.dart';
+
 import 'package:elitestate/view_model/bottombar_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -5,7 +5,7 @@ import 'package:elitestate/view/profile_screen/aboutus.dart';
 import 'package:elitestate/view/profile_screen/logout_screen.dart';
 import 'package:elitestate/view/profile_screen/my_properties.dart';
 import 'package:elitestate/view/profile_screen/privacy.dart';
-import 'package:elitestate/view/profile_screen/saved_properties.dart';
+
 import 'package:elitestate/view/profile_screen/terms_condition.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,19 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                   10.verticalSpace,
-                  _MenuCard(
-                    icon: Icons.favorite_rounded,
-                    title: "Saved Properties",
-                    subtitle: "Properties you marked as favorite",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SavedPropertiesScreen(),
-                        ),
-                      );
-                    },
-                  ),
+
                   24.verticalSpace,
                   _sectionTitle("General"),
                   12.verticalSpace,
@@ -129,24 +117,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                   ),
                   20.verticalSpace,
-                  OutlinedButton(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                      side: BorderSide(color: primaryColor),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      "Cancel Subscription",
-                      style: style16.copyWith(
-                        color: primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  30.verticalSpace,
                 ],
               ),
             ),

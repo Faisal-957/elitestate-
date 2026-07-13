@@ -1,42 +1,62 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PropertyModel {
-  final String id;
+  final String? id;
   final String title;
   final String location;
   final String ownerId;
-  final String ownername;
+  final String ownerName;
 
   final double price;
   final int bedrooms;
   final int bathrooms;
   final double area;
-  final bool isFavorite;
+  final Timestamp? createdAt;
 
   PropertyModel({
-    required this.id,
+    this.id,
     required this.title,
-    required this.ownername,
+
     required this.location,
+    required this.ownerId,
+    required this.ownerName,
 
     required this.price,
     required this.bedrooms,
     required this.bathrooms,
     required this.area,
-    this.isFavorite = false,
-    required this.ownerId,
+
+    this.createdAt,
   });
 
-  factory PropertyModel.fromMap(Map<String, dynamic> data, {String? docId}) {
+  Map<String, dynamic> toMap() {
+    return {
+      "ownerId": ownerId,
+      "ownerName": ownerName,
+      'title': title,
+      'location': location,
+      'price': price,
+      'bedrooms': bedrooms,
+      'bathrooms': bathrooms,
+      'area': area,
+
+      // 'ownerName': ownername,
+      "createdAt": FieldValue.serverTimestamp(),
+    };
+  }
+
+  factory PropertyModel.fromMap(Map<String, dynamic> map, String? id) {
     return PropertyModel(
-      id: (data['id'] as String?) ?? docId ?? '',
-      title: (data['title'] as String?) ?? '',
-      ownername: (data['ownerName'] as String?) ?? '', // 👈 Add t
-      location: (data['location'] as String?) ?? '',
-      price: ((data['price'] as num?) ?? 0).toDouble(),
-      bedrooms: (data['bedrooms'] as num?)?.toInt() ?? 0,
-      bathrooms: (data['bathrooms'] as num?)?.toInt() ?? 0,
-      area: ((data['area'] as num?) ?? 0).toDouble(),
-      isFavorite: (data['isFavorite'] as bool?) ?? false,
-      ownerId: (data['ownerId'] as String?) ?? '',
+      title: map["title"],
+      //  ownername: map["ownername"],
+      location: map["location"],
+      price: (map["price"] as num).toDouble(),
+      bedrooms: map["bedrooms"],
+      bathrooms: map["bathrooms"],
+      area: (map["area"] as num).toDouble(),
+      id: id,
+      ownerId: map["ownerId"] ?? "",
+      ownerName: map["ownerName"] ?? "",
     );
   }
 }

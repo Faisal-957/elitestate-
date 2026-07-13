@@ -1,5 +1,6 @@
 import 'package:elitestate/firebase_options.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
+import 'package:elitestate/view/addproprety_screen/addproperty.dart';
 import 'package:elitestate/view/auth/registed_screen.dart';
 import 'package:elitestate/view/auth/sign_in_.dart';
 
@@ -8,7 +9,7 @@ import 'package:elitestate/view/splashscreen/splashscreen.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:elitestate/view_model/bottombar_viewmodel.dart';
-import 'package:elitestate/view_model/property_viewmodel.dart';
+import 'package:elitestate/view_model/homeviewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';

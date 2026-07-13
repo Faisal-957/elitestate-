@@ -50,7 +50,7 @@ class MyPropertiesScreen extends StatelessWidget {
               final data = doc.data() as Map<String, dynamic>;
 
               return PropertyCard(
-                property: PropertyModel.fromMap(data, docId: doc.id),
+                property: PropertyModel.fromMap(data, doc.id),
               );
             },
           );

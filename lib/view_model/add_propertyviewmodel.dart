@@ -1,4 +1,4 @@
-import 'package:elitestate/core/services/add_propertyservices.dart';
+import 'package:elitestate/core/services/property.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:flutter/material.dart';
 

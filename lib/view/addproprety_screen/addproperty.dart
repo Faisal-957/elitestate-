@@ -2,11 +2,17 @@ import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
+import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
+import 'package:elitestate/view/home/home.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
+import 'package:elitestate/view_model/bottombar_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:provider/provider.dart';
 
 class Addproperty extends StatelessWidget {
@@ -52,6 +58,8 @@ class Addproperty extends StatelessWidget {
         ),
         centerTitle: true,
       ),
+
+      ///body///////////////////////////////////////////
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -133,59 +141,54 @@ class Addproperty extends StatelessWidget {
                 ),
                 28.verticalSpace,
 
+                /////////////////////////// add property//////////////////////////
                 CustomButton(
                   text: "Add Property",
                   onPressed: () async {
-                    final price = double.tryParse(priceController.text);
-                    final bedrooms = int.tryParse(bedroomController.text);
-                    final bathrooms = int.tryParse(bathroomController.text);
-                    final area = double.tryParse(areaController.text);
-
+                    // Validation
                     if (titleController.text.isEmpty ||
                         locationController.text.isEmpty ||
-                        price == null ||
-                        bedrooms == null ||
-                        bathrooms == null ||
-                        area == null) {
+                        priceController.text.isEmpty ||
+                        bedroomController.text.isEmpty ||
+                        bathroomController.text.isEmpty ||
+                        areaController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Please fill all fields with valid values",
-                          ),
-                        ),
+                        const SnackBar(content: Text("Please fill all fields")),
                       );
                       return;
                     }
-                    print(FirebaseAuth.instance.currentUser?.uid);
-                    final property = PropertyModel(
-                      ownerId: FirebaseAuth.instance.currentUser!.uid,
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    final authVm = context.read<AuthViewModel>();
+                    if (authVm.userName.isEmpty) {
+                      await authVm.getUserData();
+                    }
+                    if (!context.mounted) return;
+                    // Create Property Objec
+                    final user = FirebaseAuth.instance.currentUser!;
+                    PropertyModel property = PropertyModel(
                       title: titleController.text,
                       location: locationController.text,
-                      ownername: context.read<AuthViewModel>().userName,
-                      price: price,
-                      bedrooms: bedrooms,
-                      bathrooms: bathrooms,
-                      area: area,
+                      price: double.parse(priceController.text),
+                      bedrooms: int.parse(bedroomController.text),
+                      bathrooms: int.parse(bathroomController.text),
+                      area: double.parse(areaController.text),
+                      ownerId: FirebaseAuth.instance.currentUser!.uid,
+                      ownerName: authVm.userName,
                     );
 
-                    try {
-                      await context.read<PropertyViewModel>().addProperty(
-                        property,
-                      );
+                    // Save to Firestore
+                    await context.read<PropertyViewModel>().addProperty(
+                      property,
+                    );
+                    context.read<BottomNavViewModel>().changeIndex(0);
 
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Property Added Successfully"),
-                        ),
-                      );
-                    } catch (e) {
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Failed to add property: $e")),
-                      );
-                    }
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Property Added Successfully"),
+                      ),
+                    );
+                    Get.offAll(BottomNavScreen());
                   },
                 ),
               ],

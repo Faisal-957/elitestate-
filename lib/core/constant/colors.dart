@@ -17,3 +17,10 @@ const textFieldFilledColor = Color(0xffEFF3FF);
 const LinearGradient primary = LinearGradient(
   colors: [Color(0xffFE2B5F), Color(0xffD02E56)],
 );
+const background = Color(0xFF0E0E14);
+const card = Color(0xFF1C1C26);
+const gold = Color(0xFFE8C468);
+const red = Color(0xFFE94560);
+const textPrimary = Colors.white;
+const textSecondary = Color(0xFF9A9AA6);
+const divider = Color(0xFF26262F);

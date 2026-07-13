@@ -19,7 +19,7 @@ class LogoutBottomSheet {
       builder: (context) {
         return Container(
           padding: EdgeInsets.all(30),
-          height: 300,
+          height: 350,
           decoration: BoxDecoration(
             color: lightBlack,
             borderRadius: BorderRadius.only(

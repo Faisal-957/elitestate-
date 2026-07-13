@@ -49,10 +49,7 @@ class _SigninState extends State<Signin> {
 
                 10.verticalSpace,
 
-                Text(
-                  "EMAIL ADDRESS ",
-                  style: TextStyle(fontSize: 15.sp, color: golden),
-                ),
+                Lable(title: "EMAIL"),
                 10.verticalSpace,
                 CustomTextFormField(
                   controller: emailController,
@@ -60,10 +57,7 @@ class _SigninState extends State<Signin> {
                   prefixIcon: Icons.email,
                 ),
                 10.verticalSpace,
-                Text(
-                  "PASSWORD ",
-                  style: TextStyle(fontSize: 15.sp, color: golden),
-                ),
+                Lable(title: "PASSWORD"),
                 10.verticalSpace,
                 CustomTextFormField(
                   controller: passwordController,
