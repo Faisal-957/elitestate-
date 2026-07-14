@@ -1,4 +1,4 @@
-import 'package:elitestate/core/services/property.dart';
+import 'package:elitestate/core/services/property_service.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +14,11 @@ class PropertyViewModel extends ChangeNotifier {
     await _service.addProperty(property);
 
     isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> deleteProperty(String propertyId) async {
+    await _service.deletproperty(propertyId);
     notifyListeners();
   }
 }

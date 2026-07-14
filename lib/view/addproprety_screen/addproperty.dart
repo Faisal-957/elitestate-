@@ -1,6 +1,7 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
+import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 import 'package:elitestate/view/home/home.dart';
@@ -23,22 +24,8 @@ class Addproperty extends StatelessWidget {
   final bedroomController = TextEditingController();
   final bathroomController = TextEditingController();
   final areaController = TextEditingController();
+  final descriptioncontroller = TextEditingController();
   Addproperty({super.key});
-
-  Widget _sectionLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8, left: 2),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 13.sp,
-          color: golden,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +54,6 @@ class Addproperty extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(child: Image.asset("assets/images/logo3.png", scale: 4)),
                 10.verticalSpace,
                 Text(
                   "List Your Property",
@@ -84,7 +70,7 @@ class Addproperty extends StatelessWidget {
                 ),
                 20.verticalSpace,
 
-                _sectionLabel("PROPERTY TITLE"),
+                textfoamlabel("PROPERTY TITLE"),
                 CustomTextFormField(
                   controller: titleController,
                   hintText: "e.g. Modern 3 Bed Villa",
@@ -92,7 +78,7 @@ class Addproperty extends StatelessWidget {
                 ),
                 16.verticalSpace,
 
-                _sectionLabel("LOCATION"),
+                textfoamlabel("LOCATION"),
                 CustomTextFormField(
                   controller: locationController,
                   hintText: "e.g. Karachi, Pakistan",
@@ -100,7 +86,7 @@ class Addproperty extends StatelessWidget {
                 ),
                 16.verticalSpace,
 
-                _sectionLabel("PRICE"),
+                textfoamlabel("PRICE"),
                 CustomTextFormField(
                   controller: priceController,
                   hintText: "Enter price",
@@ -109,7 +95,7 @@ class Addproperty extends StatelessWidget {
                 ),
                 20.verticalSpace,
 
-                _sectionLabel("PROPERTY DETAILS"),
+                textfoamlabel("PROPERTY DETAILS"),
                 Row(
                   children: [
                     Expanded(
@@ -139,6 +125,14 @@ class Addproperty extends StatelessWidget {
                   prefixIcon: Icons.square_foot_outlined,
                   keyboardType: TextInputType.number,
                 ),
+                16.verticalSpace,
+                textfoamlabel("DESCRIPTION"),
+
+                CustomTextFormField(
+                  controller: descriptioncontroller,
+                  hintText: "Description",
+                  prefixIcon: Icons.description,
+                ),
                 28.verticalSpace,
 
                 /////////////////////////// add property//////////////////////////
@@ -165,6 +159,7 @@ class Addproperty extends StatelessWidget {
                     // Create Property Objec
                     final user = FirebaseAuth.instance.currentUser!;
                     PropertyModel property = PropertyModel(
+                      description: descriptioncontroller.text,
                       title: titleController.text,
                       location: locationController.text,
                       price: double.parse(priceController.text),

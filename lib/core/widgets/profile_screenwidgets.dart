@@ -81,52 +81,8 @@ class MenuCard extends StatelessWidget {
   }
 }
 
-class StatCard extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final String label;
-
-  const StatCard({
-    required this.icon,
-    required this.value,
-    required this.label,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: lightBlack,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: golden, size: 28),
-            14.verticalSpace,
-            Text(
-              value,
-              style: style24.copyWith(
-                color: whiteColor,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            6.verticalSpace,
-            Text(
-              label,
-              style: style12.copyWith(color: whiteColor.withValues(alpha: 0.7)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 ///// profile screen upper section //
-Widget _buildHeader(BuildContext context) {
+Widget buildHeader(BuildContext context) {
   return Stack(
     clipBehavior: Clip.none,
     alignment: Alignment.center,
@@ -204,43 +160,5 @@ Widget _buildHeader(BuildContext context) {
         ),
       ),
     ],
-  );
-}
-
-/// row after headret///
-Widget buildStatsRow() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-    child: StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('properties').snapshots(),
-      builder: (context, snapshot) {
-        final docs = snapshot.data?.docs ?? [];
-        final totalProperties = docs.length;
-        final savedCount = docs.where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return data['isFavorite'] == true;
-        }).length;
-
-        return Row(
-          children: [
-            Expanded(
-              child: StatCard(
-                icon: Icons.apartment_rounded,
-                value: "$totalProperties",
-                label: "Listings",
-              ),
-            ),
-            12.horizontalSpace,
-            Expanded(
-              child: StatCard(
-                icon: Icons.favorite_rounded,
-                value: "$savedCount",
-                label: "Saved",
-              ),
-            ),
-          ],
-        );
-      },
-    ),
   );
 }

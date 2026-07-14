@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 
 class PropertyCard extends StatelessWidget {
   final PropertyModel property;
@@ -67,74 +68,67 @@ class PropertyCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Property Image
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(18),
-                  ),
-                  child: Image.asset(
-                    "assets/images/home.jpg",
-                    height: 190,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-
-                ///////////////////////////// Favorite icon//////////////////////////////
-
-                /////////////////////////// Price tag/////////////////////////////////////
-                Positioned(
-                  left: 12,
-                  bottom: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: primary,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      "\PKR ${formatPrice(property.price)}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: whiteColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            ///////////////////////////////////////// property image //////////////////////////
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18),
+              ),
+              child: Image.asset(
+                "assets/images/home.jpg",
+                height: 190,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
 
-            ///////////////// property title////////////////////
+            ///////////////// property title  and price title ////////////////////
             Padding(
               padding: const EdgeInsets.all(14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title
-                  Text(
-                    property.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: whiteColor,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        property.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: whiteColor,
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: golden.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "\PKR ${formatPrice(property.price)}",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: whiteColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(height: 6),
+                  6.verticalSpace,
 
                   ///////////////////////// Location///////////////////////////////////
                   Row(
                     children: [
                       Icon(Icons.location_on_outlined, size: 16, color: golden),
-                      const SizedBox(width: 4),
+                      8.horizontalSpace,
                       Expanded(
                         child: Text(
                           property.location,
@@ -148,12 +142,12 @@ class PropertyCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-
+                  8.verticalSpace,
+                  //////////////////////// owner//////////////////////////////////////
                   Row(
                     children: [
                       Icon(Icons.person, size: 16, color: golden),
-                      const SizedBox(width: 8),
+                      8.horizontalSpace,
                       Expanded(
                         child: Text(
                           property.ownerName,
@@ -167,14 +161,30 @@ class PropertyCard extends StatelessWidget {
                       ),
                     ],
                   ),
+
+                  ///////////////////////// Description/////////////////////////////
+                  8.verticalSpace,
+                  Row(
+                    children: [
+                      Icon(Icons.description, color: golden, size: 16),
+                      8.horizontalSpace,
+                      Text(
+                        property.description,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: greyColor, fontSize: 13),
+                      ),
+                    ],
+                  ),
+
                   //////////// divider/////////////////////////////////
-                  const SizedBox(height: 12),
+                  12.verticalSpace,
                   Divider(
                     color: Colors.white.withValues(alpha: 0.08),
                     height: 1,
                   ),
-                  const SizedBox(height: 12),
-
+                  12.verticalSpace,
+                  ///////////////////////// bed baht area icons////////////////////////////
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -201,47 +211,3 @@ class PropertyCard extends StatelessWidget {
     );
   }
 }
-
-// class _OwnerName extends StatelessWidget {
-//   final PropertyModel property;
-
-//   const _OwnerName({required this.property});
-
-//   static const _textStyle = TextStyle(
-//     color: whiteColor,
-//     fontSize: 13,
-//     fontWeight: FontWeight.w600,
-//   );
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (property.ownername.isNotEmpty) {
-//       return Text(
-//         " ${property.ownername}",
-//         maxLines: 1,
-//         overflow: TextOverflow.ellipsis,
-//         style: _textStyle,
-//       );
-//     }
-
-//     // if (property.ownerId.isEmpty) {
-//     //   return const Text("Owner: Unknown", style: _textStyle);
-//     // }
-
-//     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-//       future: FirebaseFirestore.instance
-//           .collection('users')
-//           .doc(property.ownerId)
-//           .get(),
-//       builder: (context, snapshot) {
-//         final name = snapshot.data?.data()?['name'] as String?;
-//         return Text(
-//           "Owner: ${name?.isNotEmpty == true ? name : 'Unknown'}",
-//           maxLines: 1,
-//           overflow: TextOverflow.ellipsis,
-//           style: _textStyle,
-//         );
-//       },
-//     );
-//   }
-// }

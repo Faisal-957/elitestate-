@@ -1,6 +1,7 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
+import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 import 'package:elitestate/view/auth/registed_screen.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
@@ -42,14 +43,11 @@ class _SigninState extends State<Signin> {
                   ),
                 ),
                 10.verticalSpace,
-                Text(
-                  "Find,save,and tour homes that you love",
-                  style: TextStyle(fontSize: 15.sp, color: Colors.white),
-                ),
+                textfoamlabel("Find,save,and tour homes that you love"),
 
                 10.verticalSpace,
 
-                Lable(title: "EMAIL"),
+                textfoamlabel("EMAIL"),
                 10.verticalSpace,
                 CustomTextFormField(
                   controller: emailController,
@@ -57,7 +55,8 @@ class _SigninState extends State<Signin> {
                   prefixIcon: Icons.email,
                 ),
                 10.verticalSpace,
-                Lable(title: "PASSWORD"),
+
+                textfoamlabel("PASSWORD"),
                 10.verticalSpace,
                 CustomTextFormField(
                   controller: passwordController,
@@ -103,15 +102,7 @@ class _SigninState extends State<Signin> {
                     ),
 
                     const SizedBox(width: 10),
-
-                    Text(
-                      "OR SIGN UP WITH",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    textfoamlabel("OR SIGN UP WITH"),
 
                     const SizedBox(width: 10),
 
@@ -142,10 +133,7 @@ class _SigninState extends State<Signin> {
                     onPressed: () {
                       Get.to(() => const RegisterScreen());
                     },
-                    child: Text(
-                      "Don't have an account? Sign Up",
-                      style: TextStyle(fontSize: 15.sp, color: golden),
-                    ),
+                    child: textfoamlabel("Don't have an account? Sign Up"),
                   ),
                 ),
               ],

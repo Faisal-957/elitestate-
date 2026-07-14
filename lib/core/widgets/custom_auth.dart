@@ -7,6 +7,7 @@ class CustomTextFormField extends StatelessWidget {
   final IconData? prefixIcon;
   final bool obscureText;
   final TextInputType keyboardType;
+  final int maxLines;
 
   const CustomTextFormField({
     super.key,
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIcon,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.maxLines = 1,
   });
 
   @override
@@ -23,6 +25,7 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       obscureText: obscureText,
+      maxLines: maxLines,
 
       // User jo text likhega uska color
       style: const TextStyle(color: Colors.white, fontSize: 16),

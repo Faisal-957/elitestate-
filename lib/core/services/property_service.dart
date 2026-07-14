@@ -24,4 +24,9 @@ class PropertyService {
       }).toList();
     });
   }
+
+  ///////////////delet///////////////
+  Future<void> deletproperty(String propertyId) async {
+    await _firestore.collection("properties").doc(propertyId).delete();
+  }
 }

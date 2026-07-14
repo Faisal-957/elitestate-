@@ -6,6 +6,7 @@ class PropertyModel {
   final String location;
   final String ownerId;
   final String ownerName;
+  final String description;
 
   final double price;
   final int bedrooms;
@@ -20,6 +21,7 @@ class PropertyModel {
     required this.location,
     required this.ownerId,
     required this.ownerName,
+    required this.description,
 
     required this.price,
     required this.bedrooms,
@@ -39,6 +41,7 @@ class PropertyModel {
       'bedrooms': bedrooms,
       'bathrooms': bathrooms,
       'area': area,
+      'description': description,
 
       // 'ownerName': ownername,
       "createdAt": FieldValue.serverTimestamp(),
@@ -47,16 +50,17 @@ class PropertyModel {
 
   factory PropertyModel.fromMap(Map<String, dynamic> map, String? id) {
     return PropertyModel(
-      title: map["title"],
-      //  ownername: map["ownername"],
-      location: map["location"],
-      price: (map["price"] as num).toDouble(),
-      bedrooms: map["bedrooms"],
-      bathrooms: map["bathrooms"],
-      area: (map["area"] as num).toDouble(),
+      title: map["title"] ?? "",
+
+      location: map["location"] ?? "",
+      price: (map["price"] as num?)?.toDouble() ?? 0,
+      bedrooms: map["bedrooms"] ?? 0,
+      bathrooms: map["bathrooms"] ?? 0,
+      area: (map["area"] as num?)?.toDouble() ?? 0,
       id: id,
       ownerId: map["ownerId"] ?? "",
       ownerName: map["ownerName"] ?? "",
+      description: map["description"] ?? "",
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
+import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
-import 'package:elitestate/view/home/home.dart';
+
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
@@ -46,12 +47,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   10.verticalSpace,
-                  Text(
-                    "Find,save,and tour homes that you love",
-                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
-                  ),
+                  textfoamlabel("Find,save,and tour homes that you love"),
                   10.verticalSpace,
-                  Lable(title: "FULL NAME"),
+                  textfoamlabel("Full NAME"),
                   10.verticalSpace,
 
                   CustomTextFormField(
@@ -60,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icons.person,
                   ),
                   10.verticalSpace,
-                  Lable(title: "Email"),
+                  textfoamlabel("EMAIL"),
                   10.verticalSpace,
                   CustomTextFormField(
                     controller: emailController,
@@ -68,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icons.email,
                   ),
                   10.verticalSpace,
-                  Lable(title: "PASSWORD"),
+                  textfoamlabel("PASSWORD"),
                   10.verticalSpace,
                   CustomTextFormField(
                     controller: passwordController,
@@ -150,10 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onPressed: () {
                         Get.back();
                       },
-                      child: Text(
-                        "Already have an account? Sign In",
-                        style: TextStyle(fontSize: 15.sp, color: golden),
-                      ),
+                      child: textfoamlabel("Already have an account? Sign In"),
                     ),
                   ),
                 ],
@@ -162,19 +157,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class Lable extends StatelessWidget {
-  final String title;
-  Lable({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(fontSize: 15.sp, color: golden),
     );
   }
 }
