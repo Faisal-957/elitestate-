@@ -2,16 +2,12 @@ import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
 import 'package:elitestate/core/widgets/lable_text.dart';
-import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
-import 'package:elitestate/view/home/home.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:elitestate/view_model/bottombar_viewmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:provider/provider.dart';
@@ -139,44 +135,34 @@ class Addproperty extends StatelessWidget {
                 CustomButton(
                   text: "Add Property",
                   onPressed: () async {
-                    // Validation
-                    if (titleController.text.isEmpty ||
-                        locationController.text.isEmpty ||
-                        priceController.text.isEmpty ||
-                        bedroomController.text.isEmpty ||
-                        bathroomController.text.isEmpty ||
-                        areaController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please fill all fields")),
-                      );
-                      return;
-                    }
                     final authVm = context.read<AuthViewModel>();
                     if (authVm.userName.isEmpty) {
                       await authVm.getUserData();
                     }
                     if (!context.mounted) return;
-                    // Create Property Objec
-                    final user = FirebaseAuth.instance.currentUser!;
-                    PropertyModel property = PropertyModel(
-                      description: descriptioncontroller.text,
-                      title: titleController.text,
-                      location: locationController.text,
-                      price: double.parse(priceController.text),
-                      bedrooms: int.parse(bedroomController.text),
-                      bathrooms: int.parse(bathroomController.text),
-                      area: double.parse(areaController.text),
-                      ownerId: FirebaseAuth.instance.currentUser!.uid,
-                      ownerName: authVm.userName,
-                    );
 
-                    // Save to Firestore
-                    await context.read<PropertyViewModel>().addProperty(
-                      property,
-                    );
-                    context.read<BottomNavViewModel>().changeIndex(0);
+                    try {
+                      await context.read<PropertyViewModel>().submitNewProperty(
+                        title: titleController.text,
+                        location: locationController.text,
+                        price: priceController.text,
+                        bedrooms: bedroomController.text,
+                        bathrooms: bathroomController.text,
+                        area: areaController.text,
+                        description: descriptioncontroller.text,
+                        ownerId: authVm.currentUserId ?? '',
+                        ownerName: authVm.userName,
+                      );
+                    } catch (e) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                      return;
+                    }
 
                     if (!context.mounted) return;
+                    context.read<BottomNavViewModel>().changeIndex(0);
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

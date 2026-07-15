@@ -48,4 +48,6 @@ class AuthServices {
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
     return await firestore.collection('users').doc(auth.currentUser!.uid).get();
   }
+
+  String? get currentUserId => auth.currentUser?.uid;
 }

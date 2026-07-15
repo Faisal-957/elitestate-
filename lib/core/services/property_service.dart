@@ -29,4 +29,17 @@ class PropertyService {
   Future<void> deletproperty(String propertyId) async {
     await _firestore.collection("properties").doc(propertyId).delete();
   }
+
+  //////////////fetching properties owned by a user ///////////////////////
+  Stream<List<PropertyModel>> fetchMyProperties(String ownerId) {
+    final data = _firestore
+        .collection("properties")
+        .where("ownerId", isEqualTo: ownerId)
+        .snapshots();
+    return data.map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return PropertyModel.fromMap(doc.data(), doc.id);
+      }).toList();
+    });
+  }
 }

@@ -7,6 +7,8 @@ class AuthViewModel extends ChangeNotifier {
   String userName = "";
   String userEmail = "";
 
+  String? get currentUserId => _services.currentUserId;
+
   Future<void> getUserData() async {
     try {
       final snapshot = await _services.getUserData();

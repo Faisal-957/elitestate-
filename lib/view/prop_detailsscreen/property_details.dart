@@ -1,18 +1,16 @@
 import 'package:elitestate/core/constant/colors.dart';
-import 'package:elitestate/core/services/property_service.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
 import 'package:elitestate/core/widgets/details_property.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PropertyDetailsScreen extends StatefulWidget {
-  PropertyService propservice = PropertyService();
-  PropertyModel dataproperty;
+  final PropertyModel dataproperty;
 
-  PropertyDetailsScreen({super.key, required this.dataproperty});
+  const PropertyDetailsScreen({super.key, required this.dataproperty});
 
   @override
   State<PropertyDetailsScreen> createState() => _PropertyDetailsScreenState();
@@ -20,7 +18,7 @@ class PropertyDetailsScreen extends StatefulWidget {
 
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
   bool get isOwner =>
-      FirebaseAuth.instance.currentUser?.uid == widget.dataproperty.ownerId;
+      context.watch<AuthViewModel>().currentUserId == widget.dataproperty.ownerId;
 
   @override
   Widget build(BuildContext context) {

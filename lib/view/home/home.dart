@@ -11,23 +11,8 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
-  Home({super.key});
-
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  String greeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return 'Good Morning';
-    } else if (hour < 17) {
-      return 'Good Afternoon';
-    }
-    return 'Good Evening';
-  }
+class Home extends StatelessWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +25,8 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Consumer<AuthViewModel>(
-                builder: (context, vm, child) {
+              Consumer2<AuthViewModel, Homeviewmodel>(
+                builder: (context, authVm, homeVm, child) {
                   return Row(
                     children: [
                       Image.asset("assets/images/logo3.png", scale: 6),
@@ -49,14 +34,16 @@ class _HomeState extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            greeting(),
+                            homeVm.greeting(),
                             style: style12.copyWith(
                               color: whiteColor.withValues(alpha: 0.6),
                             ),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            vm.userName.isNotEmpty ? vm.userName : "Guest",
+                            authVm.userName.isNotEmpty
+                                ? authVm.userName
+                                : "Guest",
                             style: style24.copyWith(
                               color: whiteColor,
                               fontSize: 22,

@@ -1,16 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/constant/textstyle.dart';
 import 'package:elitestate/core/widgets/propertycard.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:elitestate/view_model/add_propertyviewmodel.dart';
+import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyPropertiesScreen extends StatelessWidget {
   const MyPropertiesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ownerId = context.watch<AuthViewModel>().currentUserId ?? '';
+
     return Scaffold(
       backgroundColor: blackColor,
       appBar: AppBar(
@@ -19,11 +22,8 @@ class MyPropertiesScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: golden),
         title: Text("My Properties", style: style16.copyWith(color: golden)),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('properties')
-            .where('ownerId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-            .snapshots(),
+      body: StreamBuilder<List<PropertyModel>>(
+        stream: context.read<PropertyViewModel>().myPropertiesStream(ownerId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -31,7 +31,7 @@ class MyPropertiesScreen extends StatelessWidget {
             );
           }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text(
                 "No Properties Found",
@@ -40,18 +40,13 @@ class MyPropertiesScreen extends StatelessWidget {
             );
           }
 
-          final properties = snapshot.data!.docs;
+          final properties = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             itemCount: properties.length,
             itemBuilder: (context, index) {
-              final doc = properties[index];
-              final data = doc.data() as Map<String, dynamic>;
-
-              return PropertyCard(
-                property: PropertyModel.fromMap(data, doc.id),
-              );
+              return PropertyCard(property: properties[index]);
             },
           );
         },

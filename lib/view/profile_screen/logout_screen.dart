@@ -1,12 +1,13 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/constant/textstyle.dart';
 import 'package:elitestate/view/auth/sign_in_.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:provider/provider.dart';
 
 class LogoutBottomSheet {
   // Show Bottom Sheet
@@ -71,7 +72,7 @@ class LogoutBottomSheet {
                     ),
 
                     onPressed: () async {
-                      await FirebaseAuth.instance.signOut(); // 🔥 REAL LOGOUT
+                      await context.read<AuthViewModel>().logout();
 
                       Get.back(); // bottom sheet close
 
