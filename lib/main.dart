@@ -1,5 +1,6 @@
 import 'package:elitestate/firebase_options.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
+import 'package:elitestate/view/splashscreen/splashscreen.dart';
 
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: BottomNavScreen(),
+          home: Splashscreen(),
         );
       },
     );

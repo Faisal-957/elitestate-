@@ -1,4 +1,7 @@
+import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 import 'package:elitestate/view/auth/registed_screen.dart';
+import 'package:elitestate/view/auth/sign_in_.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -12,13 +15,27 @@ class _SplashscreenState extends State<Splashscreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    checkUser();
+  }
+
+  Future<void> checkUser() async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (!mounted) return;
+
+    if (user != null) {
       Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => RegisterScreen()),
+        MaterialPageRoute(builder: (_) => BottomNavScreen()),
       );
-    });
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => Signin()),
+      );
+    }
   }
 
   @override

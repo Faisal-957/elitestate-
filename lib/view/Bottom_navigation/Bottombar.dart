@@ -1,4 +1,5 @@
 import 'package:elitestate/core/constant/colors.dart';
+import 'package:elitestate/view/addproprety_screen/addprop2.dart';
 import 'package:elitestate/view/addproprety_screen/addproperty.dart';
 import 'package:elitestate/view/home/home.dart';
 import 'package:elitestate/view/profile_screen/profile_screen.dart';

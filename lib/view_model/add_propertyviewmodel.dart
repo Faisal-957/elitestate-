@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/services/property_service.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:flutter/material.dart';
@@ -59,5 +60,30 @@ class PropertyViewModel extends ChangeNotifier {
 
   Stream<List<PropertyModel>> myPropertiesStream(String ownerId) {
     return _service.fetchMyProperties(ownerId);
+  }
+
+  Future<void> updateProperty({
+    required String propertyId,
+    required String title,
+    required String location,
+    required double price,
+    required int bedrooms,
+    required int bathrooms,
+    required double area,
+    required String description,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection('properties')
+        .doc(propertyId)
+        .update({
+          'title': title,
+          'location': location,
+          'price': price,
+          'bedrooms': bedrooms,
+          'bathrooms': bathrooms,
+          'area': area,
+          'description': description,
+        });
+    notifyListeners();
   }
 }

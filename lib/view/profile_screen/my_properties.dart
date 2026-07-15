@@ -2,9 +2,12 @@ import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/constant/textstyle.dart';
 import 'package:elitestate/core/widgets/propertycard.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
+import 'package:elitestate/view/prop_detailsscreen/property_details.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:provider/provider.dart';
 
 class MyPropertiesScreen extends StatelessWidget {
@@ -46,7 +49,13 @@ class MyPropertiesScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             itemCount: properties.length,
             itemBuilder: (context, index) {
-              return PropertyCard(property: properties[index]);
+              return GestureDetector(
+                onTap: () {
+                  Get.to(PropertyDetailsScreen(dataproperty: properties[index]));
+                },
+
+                child: PropertyCard(property: properties[index]),
+              );
             },
           );
         },

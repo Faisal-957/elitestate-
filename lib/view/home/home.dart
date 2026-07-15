@@ -11,8 +11,20 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  void initstate() {
+    super.initState();
+    Future.microtask(() {
+      context.read<AuthViewModel>().getUserData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +79,6 @@ class Home extends StatelessWidget {
                           prefixIcon: Icons.search,
                         ),
                       ),
-                      10.horizontalSpace,
-                      Container(
-                        height: 52,
-                        width: 52,
-                        decoration: BoxDecoration(
-                          gradient: primary,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.tune_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
                     ],
                   );
                 },
@@ -99,6 +95,15 @@ class Home extends StatelessWidget {
                             ConnectionState.waiting) {
                           return Center(
                             child: SizedBox(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              "Error: ${snapshot.error}",
+                              style: TextStyle(color: whiteColor),
+                            ),
                           );
                         }
 

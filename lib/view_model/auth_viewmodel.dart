@@ -23,6 +23,7 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  //////////////////login//////////////////
   Future<void> loginn(String email, String password) async {
     isLoading = true;
     notifyListeners();
@@ -36,6 +37,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///////////////// signup//////////////////
   Future<void> signup(String name, String email, String password) async {
     isLoading = true;
     notifyListeners();
@@ -48,6 +50,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  ////////////// logout/////////////
   Future<void> logout() async {
     await _services.signOut();
   }

@@ -44,7 +44,7 @@ class PropertyModel {
       'description': description,
 
       // 'ownerName': ownername,
-      "createdAt": FieldValue.serverTimestamp(),
+      "createdAt": Timestamp.now(),
     };
   }
 

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/constant/textstyle.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
