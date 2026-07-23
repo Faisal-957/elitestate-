@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
+import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class PropertyCard extends StatelessWidget {
+class PropertyCard extends StatefulWidget {
   final PropertyModel property;
   final VoidCallback? onTap;
 
@@ -20,6 +24,13 @@ class PropertyCard extends StatelessWidget {
     }
     return buffer.toString();
   }
+
+  @override
+  State<PropertyCard> createState() => _PropertyCardState();
+}
+
+class _PropertyCardState extends State<PropertyCard> {
+  int activeIndex = 0;
 
   Widget _featureChip(IconData icon, String label) {
     return Row(
@@ -49,7 +60,7 @@ class PropertyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: widget.onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
@@ -69,18 +80,62 @@ class PropertyCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///////////////////////////////////////// property image //////////////////////////
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(18),
-              ),
-              child: Image.asset(
-                "assets/images/home.jpg",
-                height: 190,
-                width: double.infinity,
-                fit: BoxFit.cover,
+            Consumer<PropertyViewModel>(
+              builder: (context, value, child) => Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(18),
+                    ),
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: 190,
+                        autoPlay: false,
+                        viewportFraction: 1.0,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            activeIndex = index;
+                          });
+                        },
+                      ),
+                      items:
+                          [
+                            "assets/images/home.jpg",
+                            "assets/images/home2.jpg",
+                            "assets/images/interior.jpg",
+                            "assets/images/home2.jpg",
+                            "assets/images/interior2.jpg",
+                          ].map((image) {
+                            return Image.asset(
+                              image,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            );
+                          }).toList(),
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 10,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: AnimatedSmoothIndicator(
+                        activeIndex: activeIndex,
+                        count: 5,
+                        effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          activeDotColor: whiteColor,
+                          dotColor: golden,
+                          paintStyle: PaintingStyle.stroke,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-
             ///////////////// property title  and price title ////////////////////
             Padding(
               padding: const EdgeInsets.all(14),
@@ -90,14 +145,16 @@ class PropertyCard extends StatelessWidget {
                   // Title
                   Row(
                     children: [
-                      Text(
-                        property.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: whiteColor,
+                      Expanded(
+                        child: Text(
+                          widget.property.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: whiteColor,
+                          ),
                         ),
                       ),
                       Spacer(),
@@ -111,7 +168,7 @@ class PropertyCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          "\PKR ${formatPrice(property.price)}",
+                          "\PKR ${PropertyCard.formatPrice(widget.property.price)}",
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -131,7 +188,7 @@ class PropertyCard extends StatelessWidget {
                       8.horizontalSpace,
                       Expanded(
                         child: Text(
-                          property.location,
+                          widget.property.location,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -150,7 +207,7 @@ class PropertyCard extends StatelessWidget {
                       8.horizontalSpace,
                       Expanded(
                         child: Text(
-                          property.ownerName,
+                          widget.property.ownerName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -169,7 +226,7 @@ class PropertyCard extends StatelessWidget {
                       Icon(Icons.description, color: golden, size: 16),
                       8.horizontalSpace,
                       Text(
-                        property.description,
+                        widget.property.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: greyColor, fontSize: 13),
@@ -190,15 +247,15 @@ class PropertyCard extends StatelessWidget {
                     children: [
                       _featureChip(
                         Icons.bed_outlined,
-                        "${property.bedrooms} Beds",
+                        "${widget.property.bedrooms} Beds",
                       ),
                       _featureChip(
                         Icons.bathtub_outlined,
-                        "${property.bathrooms} Baths",
+                        "${widget.property.bathrooms} Baths",
                       ),
                       _featureChip(
                         Icons.square_foot_outlined,
-                        "${property.area.toStringAsFixed(0)} sqft",
+                        "${widget.property.area.toStringAsFixed(0)} sqft",
                       ),
                     ],
                   ),

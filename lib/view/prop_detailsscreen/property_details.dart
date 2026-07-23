@@ -22,9 +22,10 @@ class PropertyDetailsScreen extends StatefulWidget {
 }
 
 class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
+  late PropertyModel property = widget.dataproperty;
+
   bool get isOwner =>
-      context.watch<AuthViewModel>().currentUserId ==
-      widget.dataproperty.ownerId;
+      context.watch<AuthViewModel>().currentUserId == property.ownerId;
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +39,13 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
             children: [
               buildImageHeader(context),
               const SizedBox(height: 16),
-              buildTitleAndPrice(widget.dataproperty),
+              buildTitleAndPrice(property),
               const SizedBox(height: 16),
-              buildStatsRow(widget.dataproperty),
+              buildStatsRow(property),
               const SizedBox(height: 8),
-              buildOwnerRow(ownerName: widget.dataproperty.ownerName),
+              buildOwnerRow(ownerName: property.ownerName),
               const SizedBox(height: 8),
-              buildDescription(widget.dataproperty),
+              buildDescription(property),
               const SizedBox(height: 16),
               isOwner
                   ? Column(
@@ -82,7 +83,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                             if (confirm == true) {
                               await context
                                   .read<PropertyViewModel>()
-                                  .deleteProperty(widget.dataproperty.id!);
+                                  .deleteProperty(property.id!);
 
                               Navigator.pop(context);
                             }
@@ -91,12 +92,13 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                         10.verticalSpace,
                         CustomButton(
                           text: "Edit Property",
-                          onPressed: () {
-                            Get.to(
-                              () => Addproperty(
-                                existingProperty: widget.dataproperty,
-                              ),
+                          onPressed: () async {
+                            final updated = await Get.to<PropertyModel>(
+                              () => Addproperty(existingProperty: property),
                             );
+                            if (updated != null) {
+                              setState(() => property = updated);
+                            }
                           },
                         ),
                       ],

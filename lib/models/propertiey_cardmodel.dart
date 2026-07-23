@@ -7,6 +7,7 @@ class PropertyModel {
   final String ownerId;
   final String ownerName;
   final String description;
+  // final List<String> images;
 
   final double price;
   final int bedrooms;
@@ -23,6 +24,7 @@ class PropertyModel {
     required this.ownerName,
     required this.description,
 
+    // required this.images,
     required this.price,
     required this.bedrooms,
     required this.bathrooms,
@@ -42,6 +44,7 @@ class PropertyModel {
       'bathrooms': bathrooms,
       'area': area,
       'description': description,
+      // "images": images,
 
       // 'ownerName': ownername,
       "createdAt": Timestamp.now(),
@@ -61,6 +64,7 @@ class PropertyModel {
       ownerId: map["ownerId"] ?? "",
       ownerName: map["ownerName"] ?? "",
       description: map["description"] ?? "",
+      // images: List<String>.from(map["images"] ?? []),
     );
   }
 }

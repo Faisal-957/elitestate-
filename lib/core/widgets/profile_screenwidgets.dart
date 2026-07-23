@@ -1,6 +1,9 @@
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/constant/textstyle.dart';
+import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
@@ -122,40 +125,59 @@ Widget buildHeader(BuildContext context) {
       ),
       Positioned(
         top: 130,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: blackColor,
-                shape: BoxShape.circle,
-                border: Border.all(color: golden, width: 2),
-              ),
-              child: CircleAvatar(
-                radius: 46,
-                backgroundColor: lightBlack,
-                child: Icon(Icons.person, size: 50, color: golden),
-              ),
-            ),
-            Positioned(
-              bottom: 2,
-              right: 2,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: golden,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: blackColor, width: 2),
+        child: Consumer<PropertyViewModel>(
+          builder: (context, vm, child) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: blackColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: golden, width: 2),
+                  ),
+                  child: GestureDetector(
+                    onTap: vm.pickProfileImage,
+                    child: CircleAvatar(
+                      radius: 46,
+                      backgroundColor: lightBlack,
+
+                      // Image select hone ke baad yahan show hogi
+
+                      // Image select hone ke baad yahan show hogi
+                      backgroundImage: vm.profileImage != null
+                          ? FileImage(File(vm.profileImage!.path))
+                          : null,
+
+                      // Image nahi hai to icon show hoga
+                      child: vm.profileImage == null
+                          ? Icon(Icons.person, size: 50, color: golden)
+                          : null,
+                    ),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.camera_alt,
-                  size: 16,
-                  color: Colors.black,
+
+                Positioned(
+                  bottom: 2,
+                  right: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: golden,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: blackColor, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
       ),
     ],

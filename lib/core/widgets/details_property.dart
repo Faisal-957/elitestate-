@@ -1,7 +1,11 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/propertycard.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
+import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 Widget statCard({required IconData icon, required String label}) {
   return Container(
@@ -97,13 +101,55 @@ Widget buildImageHeader(
   String imageUrl =
       'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
 }) {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(16),
-    child: Image.network(
-      imageUrl,
-      height: 230,
-      width: double.infinity,
-      fit: BoxFit.cover,
+  return Consumer<PropertyViewModel>(
+    builder: (context, value, child) => Stack(
+      children: [
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+          child: CarouselSlider(
+            options: CarouselOptions(
+              height: 190,
+              autoPlay: false,
+              viewportFraction: 1.0,
+              onPageChanged: (index, reason) {
+                value.changeImageIndex(index);
+              },
+            ),
+            items:
+                [
+                  "assets/images/home.jpg",
+                  "assets/images/home2.jpg",
+                  "assets/images/interior.jpg",
+                  "assets/images/home2.jpg",
+                  "assets/images/interior2.jpg",
+                ].map((image) {
+                  return Image.asset(
+                    image,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  );
+                }).toList(),
+          ),
+        ),
+        Positioned(
+          bottom: 10,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: AnimatedSmoothIndicator(
+              activeIndex: value.activeindex,
+              count: 5,
+              effect: WormEffect(
+                dotHeight: 10,
+                dotWidth: 10,
+                activeDotColor: whiteColor,
+                dotColor: golden,
+                paintStyle: PaintingStyle.stroke,
+              ),
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

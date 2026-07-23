@@ -1,4 +1,5 @@
 import 'package:elitestate/firebase_options.dart';
+import 'package:elitestate/free.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 import 'package:elitestate/view/splashscreen/splashscreen.dart';
 
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
 
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: Splashscreen(),
+          home: BottomNavScreen(),
         );
       },
     );

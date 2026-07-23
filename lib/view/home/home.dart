@@ -19,7 +19,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  void initstate() {
+  @override
+  void initState() {
     super.initState();
     Future.microtask(() {
       context.read<AuthViewModel>().getUserData();
@@ -92,10 +93,11 @@ class _HomeState extends State<Home> {
                       stream: homeVm.propertiesStream,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: SizedBox(child: CircularProgressIndicator()),
-                          );
+                                ConnectionState.waiting &&
+                            !snapshot.hasData) {
+                          // return Center(
+                          //   child: SizedBox(child: CircularProgressIndicator()),
+                          // );
                         }
 
                         if (snapshot.hasError) {

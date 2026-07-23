@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
+import 'package:elitestate/core/widgets/imagepicker.dart';
 import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
@@ -82,6 +85,9 @@ class Addproperty extends StatelessWidget {
                   style: TextStyle(fontSize: 13.sp, color: Colors.white70),
                 ),
                 20.verticalSpace,
+                textfoamlabel("UPLOAD IMAGES"),
+
+                Imagepicker(),
 
                 textfoamlabel("PROPERTY TITLE"),
                 CustomTextFormField(
@@ -208,10 +214,21 @@ class Addproperty extends StatelessWidget {
                     );
 
                     if (isEditMode) {
-                      context.read<BottomNavViewModel>().changeIndex(0);
-                      Get.offAll(
-                        BottomNavScreen(),
-                      ); // edit ke baad pichli screen (My Properties) pay wapis
+                      Get.back(
+                        result: PropertyModel(
+                          id: existingProperty!.id,
+                          title: titleController.text,
+                          location: locationController.text,
+                          price: double.parse(priceController.text),
+                          bedrooms: int.parse(bedroomController.text),
+                          bathrooms: int.parse(bathroomController.text),
+                          area: double.parse(areaController.text),
+                          description: descriptioncontroller.text,
+                          ownerId: existingProperty!.ownerId,
+                          ownerName: existingProperty!.ownerName,
+                          createdAt: existingProperty!.createdAt,
+                        ),
+                      );
                     } else {
                       context.read<BottomNavViewModel>().changeIndex(0);
                       Get.offAll(BottomNavScreen());
