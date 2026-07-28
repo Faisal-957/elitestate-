@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: true,
 
           theme: ThemeData(primarySwatch: Colors.blue),
           home: BottomNavScreen(),
