@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
-import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PropertyCard extends StatefulWidget {
   final PropertyModel property;
@@ -30,7 +29,7 @@ class PropertyCard extends StatefulWidget {
 }
 
 class _PropertyCardState extends State<PropertyCard> {
-  int activeIndex = 0;
+  int _activeIndex = 0;
 
   Widget _featureChip(IconData icon, String label) {
     return Row(
@@ -80,61 +79,95 @@ class _PropertyCardState extends State<PropertyCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///////////////////////////////////////// property image //////////////////////////
-            Consumer<PropertyViewModel>(
-              builder: (context, value, child) => Stack(
-                children: [
-                  ClipRRect(
+            Builder(
+              builder: (context) {
+                final images = widget.property.images;
+
+                if (images.isEmpty) {
+                  return ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(18),
                     ),
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        height: 190,
-                        autoPlay: false,
-                        viewportFraction: 1.0,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            activeIndex = index;
-                          });
-                        },
+                    child: Container(
+                      height: 190,
+                      width: double.infinity,
+                      color: lightBlack,
+                      child: Icon(
+                        Icons.home_outlined,
+                        size: 48,
+                        color: golden.withValues(alpha: 0.5),
                       ),
-                      items:
-                          [
-                            "assets/images/home.jpg",
-                            "assets/images/home2.jpg",
-                            "assets/images/interior.jpg",
-                            "assets/images/home2.jpg",
-                            "assets/images/interior2.jpg",
-                          ].map((image) {
-                            return Image.asset(
-                              image,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            );
-                          }).toList(),
                     ),
-                  ),
+                  );
+                }
 
-                  Positioned(
-                    bottom: 10,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: AnimatedSmoothIndicator(
-                        activeIndex: activeIndex,
-                        count: 5,
-                        effect: WormEffect(
-                          dotHeight: 10,
-                          dotWidth: 10,
-                          activeDotColor: whiteColor,
-                          dotColor: golden,
-                          paintStyle: PaintingStyle.stroke,
+                return Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(18),
+                      ),
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          height: 190,
+                          autoPlay: false,
+                          viewportFraction: 1.0,
+                          onPageChanged: (index, reason) =>
+                              setState(() => _activeIndex = index),
+                        ),
+                        items: images.map((image) {
+                          debugPrint("LOADING IMAGE: $image");
+                          return CachedNetworkImage(
+                            imageUrl: image,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                              child: SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) {
+                              debugPrint("IMAGE URL: $url");
+                              debugPrint("IMAGE ERROR: $error");
+
+                              return Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  size: 40,
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+
+                    if (images.length > 1)
+                      Positioned(
+                        bottom: 10,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: AnimatedSmoothIndicator(
+                            activeIndex: _activeIndex,
+                            count: images.length,
+                            effect: WormEffect(
+                              dotHeight: 10,
+                              dotWidth: 10,
+                              activeDotColor: whiteColor,
+                              dotColor: golden,
+                              paintStyle: PaintingStyle.stroke,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              },
             ),
             ///////////////// property title  and price title ////////////////////
             Padding(

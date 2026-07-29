@@ -6,8 +6,9 @@ class PropertyModel {
   final String location;
   final String ownerId;
   final String ownerName;
+  final String ownerPhone;
   final String description;
-  // final List<String> images;
+  final List<String> images;
 
   final double price;
   final int bedrooms;
@@ -22,9 +23,10 @@ class PropertyModel {
     required this.location,
     required this.ownerId,
     required this.ownerName,
+    this.ownerPhone = '',
     required this.description,
 
-    // required this.images,
+    this.images = const [],
     required this.price,
     required this.bedrooms,
     required this.bathrooms,
@@ -37,6 +39,7 @@ class PropertyModel {
     return {
       "ownerId": ownerId,
       "ownerName": ownerName,
+      "ownerPhone": ownerPhone,
       'title': title,
       'location': location,
       'price': price,
@@ -44,7 +47,7 @@ class PropertyModel {
       'bathrooms': bathrooms,
       'area': area,
       'description': description,
-      // "images": images,
+      "images": images,
 
       // 'ownerName': ownername,
       "createdAt": Timestamp.now(),
@@ -63,8 +66,9 @@ class PropertyModel {
       id: id,
       ownerId: map["ownerId"] ?? "",
       ownerName: map["ownerName"] ?? "",
+      ownerPhone: map["ownerPhone"] ?? "",
       description: map["description"] ?? "",
-      // images: List<String>.from(map["images"] ?? []),
+      images: List<String>.from(map["images"] ?? []),
     );
   }
 }

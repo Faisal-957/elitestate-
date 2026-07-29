@@ -1,10 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/propertycard.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
-import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 Widget statCard({required IconData icon, required String label}) {
@@ -98,11 +97,44 @@ Widget ownerActionButton({
 ///////////////////////// Top images
 Widget buildImageHeader(
   BuildContext context, {
-  String imageUrl =
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800',
+  List<String> images = const [],
 }) {
-  return Consumer<PropertyViewModel>(
-    builder: (context, value, child) => Stack(
+  return _ImageHeader(images: images);
+}
+
+class _ImageHeader extends StatefulWidget {
+  final List<String> images;
+
+  const _ImageHeader({required this.images});
+
+  @override
+  State<_ImageHeader> createState() => _ImageHeaderState();
+}
+
+class _ImageHeaderState extends State<_ImageHeader> {
+  int _activeIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final images = widget.images;
+
+    if (images.isEmpty) {
+      return ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
+        child: Container(
+          height: 190,
+          width: double.infinity,
+          color: card,
+          child: Icon(
+            Icons.home_outlined,
+            size: 48,
+            color: gold.withOpacity(0.5),
+          ),
+        ),
+      );
+    }
+    ////////////////////image property////////////////////////////
+    return Stack(
       children: [
         ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
@@ -111,47 +143,55 @@ Widget buildImageHeader(
               height: 190,
               autoPlay: false,
               viewportFraction: 1.0,
-              onPageChanged: (index, reason) {
-                value.changeImageIndex(index);
-              },
+              onPageChanged: (index, reason) =>
+                  setState(() => _activeIndex = index),
             ),
-            items:
-                [
-                  "assets/images/home.jpg",
-                  "assets/images/home2.jpg",
-                  "assets/images/interior.jpg",
-                  "assets/images/home2.jpg",
-                  "assets/images/interior2.jpg",
-                ].map((image) {
-                  return Image.asset(
-                    image,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+            items: images.map((image) {
+              return CachedNetworkImage(
+                imageUrl: image,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+                errorWidget: (context, url, error) {
+                  debugPrint("IMAGE URL: $url");
+                  debugPrint("IMAGE ERROR: $error");
+
+                  return Center(
+                    child: Icon(Icons.image_not_supported, size: 40),
                   );
-                }).toList(),
+                },
+              );
+            }).toList(),
           ),
         ),
-        Positioned(
-          bottom: 10,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: AnimatedSmoothIndicator(
-              activeIndex: value.activeindex,
-              count: 5,
-              effect: WormEffect(
-                dotHeight: 10,
-                dotWidth: 10,
-                activeDotColor: whiteColor,
-                dotColor: golden,
-                paintStyle: PaintingStyle.stroke,
+        if (images.length > 1)
+          Positioned(
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: AnimatedSmoothIndicator(
+                activeIndex: _activeIndex,
+                count: images.length,
+                effect: WormEffect(
+                  dotHeight: 10,
+                  dotWidth: 10,
+                  activeDotColor: whiteColor,
+                  dotColor: golden,
+                  paintStyle: PaintingStyle.stroke,
+                ),
               ),
             ),
           ),
-        ),
       ],
-    ),
-  );
+    );
+  }
 }
 
 Widget circleIconButton({required IconData icon, required VoidCallback onTap}) {

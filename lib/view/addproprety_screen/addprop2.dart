@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:elitestate/core/constant/colors.dart';
 import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
-import 'package:elitestate/core/widgets/imagepicker.dart';
+import 'package:elitestate/core/widgets/imagecard.dart';
 import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 import 'package:elitestate/view_model/add_propertyviewmodel.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:elitestate/view_model/bottombar_viewmodel.dart';
+import 'package:elitestate/view_model/imagepicker_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -43,8 +44,18 @@ class Addproperty extends StatelessWidget {
 
   bool get isEditMode => existingProperty != null;
 
+  final ValueNotifier<bool> _imagesSeeded = ValueNotifier(false);
+
   @override
   Widget build(BuildContext context) {
+    if (isEditMode && !_imagesSeeded.value) {
+      _imagesSeeded.value = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<ImagepickerViewmodel>()
+          ..resetAll()
+          ..setExistingImages(existingProperty!.images);
+      });
+    }
     return Scaffold(
       backgroundColor: blackColor,
       appBar: AppBar(
@@ -154,86 +165,120 @@ class Addproperty extends StatelessWidget {
                 ),
                 28.verticalSpace,
 
-                CustomButton(
-                  text: isEditMode ? "Update Property" : "Add Property",
-                  onPressed: () async {
-                    final authVm = context.read<AuthViewModel>();
-                    if (authVm.userName.isEmpty) {
-                      await authVm.getUserData();
-                    }
-                    if (!context.mounted) return;
-
-                    try {
-                      if (isEditMode) {
-                        // 👇 EDIT MODE — update existing property
-                        await context.read<PropertyViewModel>().updateProperty(
-                          propertyId: existingProperty!
-                              .id!, // apna actual id field name use karain
-                          title: titleController.text,
-                          location: locationController.text,
-                          price: double.parse(priceController.text),
-                          bedrooms: int.parse(bedroomController.text),
-                          bathrooms: int.parse(bathroomController.text),
-                          area: double.parse(areaController.text),
-                          description: descriptioncontroller.text,
-                        );
-                      } else {
-                        // 👇 ADD MODE — naya property banayen
-                        await context
-                            .read<PropertyViewModel>()
-                            .submitNewProperty(
-                              title: titleController.text,
-                              location: locationController.text,
-                              price: priceController.text,
-                              bedrooms: bedroomController.text,
-                              bathrooms: bathroomController.text,
-                              area: areaController.text,
-                              description: descriptioncontroller.text,
-                              ownerId: authVm.currentUserId ?? '',
-                              ownerName: authVm.userName,
-                            );
+                Consumer<PropertyViewModel>(
+                  builder: (context, propertyVm, child) => CustomButton(
+                    text: isEditMode ? "Update Property" : "Add Property",
+                    isloading: propertyVm.isLoading,
+                    onPressed: () async {
+                      final authVm = context.read<AuthViewModel>();
+                      if (authVm.userName.isEmpty) {
+                        await authVm.getUserData();
                       }
-                    } catch (e) {
                       if (!context.mounted) return;
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(e.toString())));
-                      return;
-                    }
 
-                    if (!context.mounted) return;
+                      List<String> updatedImageUrls = [];
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          isEditMode
-                              ? "Property Updated Successfully"
-                              : "Property Added Successfully",
-                        ),
-                      ),
-                    );
+                      try {
+                        if (isEditMode) {
+                          // 👇 EDIT MODE — update existing property
+                          final imageVm = context.read<ImagepickerViewmodel>();
+                          final newUrls = imageVm.selectedImages.isNotEmpty
+                              ? await imageVm.uploadSelectedImages()
+                              : <String>[];
+                          if (!context.mounted) return;
 
-                    if (isEditMode) {
-                      Get.back(
-                        result: PropertyModel(
-                          id: existingProperty!.id,
-                          title: titleController.text,
-                          location: locationController.text,
-                          price: double.parse(priceController.text),
-                          bedrooms: int.parse(bedroomController.text),
-                          bathrooms: int.parse(bathroomController.text),
-                          area: double.parse(areaController.text),
-                          description: descriptioncontroller.text,
-                          ownerId: existingProperty!.ownerId,
-                          ownerName: existingProperty!.ownerName,
-                          createdAt: existingProperty!.createdAt,
+                          updatedImageUrls = [
+                            ...imageVm.existingImageUrls,
+                            ...newUrls,
+                          ];
+                          if (updatedImageUrls.isEmpty) {
+                            throw Exception("Please add at least one picture");
+                          }
+
+                          await context.read<PropertyViewModel>().updateProperty(
+                            propertyId: existingProperty!
+                                .id!, // apna actual id field name use karain
+                            title: titleController.text,
+                            location: locationController.text,
+                            price: double.parse(priceController.text),
+                            bedrooms: int.parse(bedroomController.text),
+                            bathrooms: int.parse(bathroomController.text),
+                            area: double.parse(areaController.text),
+                            description: descriptioncontroller.text,
+                            imageUrls: updatedImageUrls,
+                          );
+                        } else {
+                          // 👇 ADD MODE — naya property banayen
+                          final imageVm = context.read<ImagepickerViewmodel>();
+                          if (imageVm.selectedImages.isEmpty) {
+                            throw Exception("Please add at least one picture");
+                          }
+                          final imageUrls = await imageVm
+                              .uploadSelectedImages();
+                          if (!context.mounted) return;
+
+                          await context
+                              .read<PropertyViewModel>()
+                              .submitNewProperty(
+                                title: titleController.text,
+                                location: locationController.text,
+                                price: priceController.text,
+                                bedrooms: bedroomController.text,
+                                bathrooms: bathroomController.text,
+                                area: areaController.text,
+                                description: descriptioncontroller.text,
+                                ownerId: authVm.currentUserId ?? '',
+                                ownerName: authVm.userName,
+                                ownerPhone: authVm.userPhone,
+                                imageUrls: imageUrls,
+                              );
+                        }
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(e.toString())));
+                        return;
+                      }
+
+                      if (!context.mounted) return;
+
+                      context.read<ImagepickerViewmodel>().resetAll();
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            isEditMode
+                                ? "Property Updated Successfully"
+                                : "Property Added Successfully",
+                          ),
                         ),
                       );
-                    } else {
-                      context.read<BottomNavViewModel>().changeIndex(0);
-                      Get.offAll(BottomNavScreen());
-                    }
-                  },
+
+                      if (isEditMode) {
+                        Get.back(
+                          result: PropertyModel(
+                            id: existingProperty!.id,
+                            title: titleController.text,
+                            location: locationController.text,
+                            price: double.parse(priceController.text),
+                            bedrooms: int.parse(bedroomController.text),
+                            bathrooms: int.parse(bathroomController.text),
+                            area: double.parse(areaController.text),
+                            description: descriptioncontroller.text,
+                            ownerId: existingProperty!.ownerId,
+                            ownerName: existingProperty!.ownerName,
+                            ownerPhone: existingProperty!.ownerPhone,
+                            images: updatedImageUrls,
+                            createdAt: existingProperty!.createdAt,
+                          ),
+                        );
+                      } else {
+                        context.read<BottomNavViewModel>().changeIndex(0);
+                        Get.offAll(BottomNavScreen());
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

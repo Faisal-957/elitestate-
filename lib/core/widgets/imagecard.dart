@@ -1,16 +1,17 @@
 import 'dart:io';
 
-import 'package:elitestate/view_model/add_propertyviewmodel.dart';
+import 'package:elitestate/view_model/imagepicker_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:provider/provider.dart';
+////////////////// image card //////////////////////////
 
 class Imagepicker extends StatelessWidget {
   const Imagepicker({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PropertyViewModel>(
+    return Consumer<ImagepickerViewmodel>(
       builder: (context, vm, child) {
         return Container(
           width: double.infinity,
@@ -34,11 +35,13 @@ class Imagepicker extends StatelessWidget {
               const SizedBox(height: 10),
 
               // Images - Horizontal Scroll + Maximum 2 Rows
-              if (vm.selectedImages.isNotEmpty)
+              if (vm.existingImageUrls.isNotEmpty ||
+                  vm.selectedImages.isNotEmpty)
                 Expanded(
                   child: GridView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: vm.selectedImages.length,
+                    itemCount:
+                        vm.existingImageUrls.length + vm.selectedImages.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -47,17 +50,33 @@ class Imagepicker extends StatelessWidget {
                           childAspectRatio: 1,
                         ),
                     itemBuilder: (context, index) {
+                      final bool isExisting =
+                          index < vm.existingImageUrls.length;
+                      final Widget image = isExisting
+                          ? Image.network(
+                              vm.existingImageUrls[index],
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(
+                                vm
+                                    .selectedImages[index -
+                                        vm.existingImageUrls.length]
+                                    .path,
+                              ),
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            );
+
                       return Stack(
                         children: [
                           // Image
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              File(vm.selectedImages[index].path),
-                              width: 90,
-                              height: 90,
-                              fit: BoxFit.cover,
-                            ),
+                            child: image,
                           ),
 
                           // Remove Button
@@ -66,7 +85,13 @@ class Imagepicker extends StatelessWidget {
                             top: 2,
                             child: GestureDetector(
                               onTap: () {
-                                vm.removeImage(index);
+                                if (isExisting) {
+                                  vm.removeExistingImage(index);
+                                } else {
+                                  vm.removeImage(
+                                    index - vm.existingImageUrls.length,
+                                  );
+                                }
                               },
                               child: Container(
                                 padding: const EdgeInsets.all(3),

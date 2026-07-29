@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elitestate/core/services/property_service.dart';
 import 'package:elitestate/models/propertiey_cardmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class PropertyViewModel extends ChangeNotifier {
   final PropertyService _service = PropertyService();
-  int activeindex = 0;
 
   bool isLoading = false;
 
@@ -32,6 +28,8 @@ class PropertyViewModel extends ChangeNotifier {
     required String description,
     required String ownerId,
     required String ownerName,
+    required String ownerPhone,
+    required List<String> imageUrls,
   }) async {
     if (title.isEmpty ||
         location.isEmpty ||
@@ -40,6 +38,10 @@ class PropertyViewModel extends ChangeNotifier {
         bathrooms.isEmpty ||
         area.isEmpty) {
       throw Exception("Please fill all fields");
+    }
+
+    if (imageUrls.isEmpty) {
+      throw Exception("Please add at least one picture");
     }
 
     final property = PropertyModel(
@@ -52,6 +54,8 @@ class PropertyViewModel extends ChangeNotifier {
       description: description,
       ownerId: ownerId,
       ownerName: ownerName,
+      ownerPhone: ownerPhone,
+      images: imageUrls,
     );
 
     await addProperty(property);
@@ -61,11 +65,13 @@ class PropertyViewModel extends ChangeNotifier {
     await _service.deletproperty(propertyId);
     notifyListeners();
   }
+  ////////////////// my properties fatch/////////////
 
   Stream<List<PropertyModel>> myPropertiesStream(String ownerId) {
     return _service.fetchMyProperties(ownerId);
   }
 
+  ////////////////// update property //////////////////
   Future<void> updateProperty({
     required String propertyId,
     required String title,
@@ -75,74 +81,31 @@ class PropertyViewModel extends ChangeNotifier {
     required int bathrooms,
     required double area,
     required String description,
+    required List<String> imageUrls,
   }) async {
-    try{
-    isLoading = true;
-    notifyListeners();
-    await FirebaseFirestore.instance
-        .collection('properties')
-        .doc(propertyId)
-        .update({
-          'title': title,
-          'location': location,
-          'price': price,
-          'bedrooms': bedrooms,
-          'bathrooms': bathrooms,
-          'area': area,
-          'description': description,
-        });
-    notifyListeners();
-    }catch(e){debugPrint("Update Error: $e");}finally {
-    // Stop Loading - IMPORTANT
-    isLoading = false;
-    notifyListeners();
-  }
-  }
-
-  void changeImageIndex(int index) {
-    activeindex = index;
-    notifyListeners();
-  }
-  ////////////////// image pickert///////////////
-
-  final ImagePicker _picker = ImagePicker();
-  List<XFile> selectedImages = [];
-  Future<void> pickMultipleImages() async {
     try {
-      final List<XFile> images = await _picker.pickMultiImage();
-      if (images.isNotEmpty) {
-        selectedImages = images;
-        notifyListeners();
-      }
+      isLoading = true;
+      notifyListeners();
+      await FirebaseFirestore.instance
+          .collection('properties')
+          .doc(propertyId)
+          .update({
+            'title': title,
+            'location': location,
+            'price': price,
+            'bedrooms': bedrooms,
+            'bathrooms': bathrooms,
+            'area': area,
+            'description': description,
+            'images': imageUrls,
+          });
+      notifyListeners();
     } catch (e) {
-      debugPrint("Image pick error: $e");
-    }
-  } // Remove single image
-
-  void removeImage(int index) {
-    selectedImages.removeAt(index);
-    notifyListeners();
-  }
-
-  //Clear all images
-  void clearImages() {
-    selectedImages.clear();
-    notifyListeners();
-  }
-  /////////////// profile image picker//////////
-
-  XFile? profileImage;
-
-  Future<void> pickProfileImage() async {
-    try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-      if (image != null) {
-        profileImage = image;
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint("Profile image error: $e");
+      debugPrint("Update Error: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
   }
+
 }

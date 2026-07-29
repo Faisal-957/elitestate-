@@ -37,13 +37,36 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildImageHeader(context),
+              buildImageHeader(context, images: property.images),
               const SizedBox(height: 16),
               buildTitleAndPrice(property),
               const SizedBox(height: 16),
               buildStatsRow(property),
               const SizedBox(height: 8),
-              buildOwnerRow(ownerName: property.ownerName),
+              buildOwnerRow(
+                ownerName: property.ownerName,
+                onCall: () => showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    backgroundColor: golden,
+                    title: const Text("Contact Number"),
+                    content: Text(
+                      property.ownerPhone.isNotEmpty
+                          ? property.ownerPhone
+                          : "No contact number available",
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          "Close",
+                          style: TextStyle(color: blackColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 8),
               buildDescription(property),
               const SizedBox(height: 16),
@@ -103,7 +126,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                         ),
                       ],
                     )
-                  : CustomButton(text: "Contact", onPressed: () {}),
+                  : const SizedBox.shrink(),
             ],
           ),
         ),

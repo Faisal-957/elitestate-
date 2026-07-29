@@ -5,6 +5,7 @@ import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
 
 import 'package:elitestate/view_model/auth_viewmodel.dart';
+import 'package:elitestate/view_model/imagepicker_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -82,6 +83,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     text: "CREATE ACCOUNT",
                     onPressed: () async {
                       try {
+                        // ImagePickerViewModel access
+                        final imageVM = context.read<ImagepickerViewmodel>();
+
+                        // Profile image Cloudinary par upload
+                        final String? profileImageUrl = await imageVM
+                            .uploadProfileImage();
+                        /////// signup////////
                         await context.read<AuthViewModel>().signup(
                           nameController.text.trim(),
                           emailController.text.trim(),
