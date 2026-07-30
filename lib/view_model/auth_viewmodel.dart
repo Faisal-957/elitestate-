@@ -94,6 +94,22 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
+  ////////// FORGOT PASSWORD //////////
+  Future<void> forgotPassword(String email) async {
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      await _services.resetPassword(email: email);
+    } catch (e) {
+      debugPrint("Forgot Password Error: $e");
+      rethrow;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   ////////////// LOGOUT //////////////
   Future<void> logout() async {
     await _services.signOut();

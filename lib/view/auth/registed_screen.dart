@@ -27,142 +27,126 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            color: Colors.black,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Image.asset("assets/images/logo3.png", scale: 2),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(child: Image.asset("assets/images/logo3.png", scale: 2)),
+                Text(
+                  "Create your Account",
+                  style: TextStyle(
+                    fontSize: 30.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  Text(
-                    "Create your Account",
-                    style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                ),
+
+                textfoamlabel("Find,save,and tour homes that you love"),
+                5.verticalSpace,
+                textfoamlabel("Full NAME"),
+                5.verticalSpace,
+
+                CustomTextFormField(
+                  controller: nameController,
+                  hintText: "Full Name",
+                  prefixIcon: Icons.person,
+                ),
+                5.verticalSpace,
+                textfoamlabel("EMAIL"),
+                5.verticalSpace,
+                CustomTextFormField(
+                  controller: emailController,
+                  hintText: "Email",
+                  prefixIcon: Icons.email,
+                ),
+                5.verticalSpace,
+                textfoamlabel("PASSWORD"),
+                5.verticalSpace,
+                CustomTextFormField(
+                  controller: passwordController,
+                  hintText: "Password",
+                  prefixIcon: Icons.lock,
+                  obscureText: true,
+                ),
+
+                10.verticalSpace,
+                CustomButton(
+                  text: "CREATE ACCOUNT",
+                  onPressed: () async {
+                    try {
+                      // ImagePickerViewModel access
+                      final imageVM = context.read<ImagepickerViewmodel>();
+
+                      // Profile image Cloudinary par upload
+                      final String? profileImageUrl = await imageVM
+                          .uploadProfileImage();
+                      /////// signup////////
+                      await context.read<AuthViewModel>().signup(
+                        nameController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                      );
+                      nameController.clear();
+                      emailController.clear();
+                      passwordController.clear();
+                      Get.to(BottomNavScreen());
+                    } catch (e) {
+                      Get.snackbar(
+                        "error",
+                        e.toString(),
+                        colorText: Colors.white,
+                      );
+                    }
+                  },
+                ),
+                10.verticalSpace,
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Divider(color: Colors.grey, thickness: 1),
                     ),
-                  ),
-                  10.verticalSpace,
-                  textfoamlabel("Find,save,and tour homes that you love"),
-                  10.verticalSpace,
-                  textfoamlabel("Full NAME"),
-                  10.verticalSpace,
 
-                  CustomTextFormField(
-                    controller: nameController,
-                    hintText: "Full Name",
-                    prefixIcon: Icons.person,
-                  ),
-                  10.verticalSpace,
-                  textfoamlabel("EMAIL"),
-                  10.verticalSpace,
-                  CustomTextFormField(
-                    controller: emailController,
-                    hintText: "Email",
-                    prefixIcon: Icons.email,
-                  ),
-                  10.verticalSpace,
-                  textfoamlabel("PASSWORD"),
-                  10.verticalSpace,
-                  CustomTextFormField(
-                    controller: passwordController,
-                    hintText: "Password",
-                    prefixIcon: Icons.lock,
-                    obscureText: true,
-                  ),
+                    const SizedBox(width: 10),
+                    textfoamlabel("OR SIGN UP WITH"),
+                    const SizedBox(width: 10),
 
-                  30.verticalSpace,
-                  CustomButton(
-                    text: "CREATE ACCOUNT",
-                    onPressed: () async {
-                      try {
-                        // ImagePickerViewModel access
-                        final imageVM = context.read<ImagepickerViewmodel>();
-
-                        // Profile image Cloudinary par upload
-                        final String? profileImageUrl = await imageVM
-                            .uploadProfileImage();
-                        /////// signup////////
-                        await context.read<AuthViewModel>().signup(
-                          nameController.text.trim(),
-                          emailController.text.trim(),
-                          passwordController.text.trim(),
-                        );
-                        nameController.clear();
-                        emailController.clear();
-                        passwordController.clear();
-                        Get.to(BottomNavScreen());
-                      } catch (e) {
-                        Get.snackbar(
-                          "error",
-                          e.toString(),
-                          colorText: Colors.white,
-                        );
-                      }
+                    const Expanded(
+                      child: Divider(color: Colors.grey, thickness: 1),
+                    ),
+                    10.verticalSpace,
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset("assets/images/google.png", scale: 15),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Image.asset(
+                        "assets/images/facebook.png",
+                        scale: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Get.back();
                     },
+                    child: textfoamlabel("Already have an account? Sign In"),
                   ),
-                  10.verticalSpace,
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1),
-                      ),
-
-                      const SizedBox(width: 10),
-
-                      Text(
-                        "OR SIGN UP WITH",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-
-                      const SizedBox(width: 10),
-
-                      const Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1),
-                      ),
-                      10.verticalSpace,
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Image.asset(
-                          "assets/images/google.png",
-                          scale: 15,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Image.asset(
-                          "assets/images/facebook.png",
-                          scale: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      child: textfoamlabel("Already have an account? Sign In"),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

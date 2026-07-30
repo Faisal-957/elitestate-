@@ -3,6 +3,7 @@ import 'package:elitestate/core/widgets/custom_auth.dart';
 import 'package:elitestate/core/widgets/custom_button.dart';
 import 'package:elitestate/core/widgets/lable_text.dart';
 import 'package:elitestate/view/Bottom_navigation/Bottombar.dart';
+import 'package:elitestate/view/auth/forgot_password_screen.dart';
 import 'package:elitestate/view/auth/registed_screen.dart';
 import 'package:elitestate/view_model/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -42,22 +43,22 @@ class _SigninState extends State<Signin> {
                     color: Colors.white,
                   ),
                 ),
-                10.verticalSpace,
+
                 textfoamlabel("Find,save,and tour homes that you love"),
 
-                10.verticalSpace,
+                5.verticalSpace,
 
                 textfoamlabel("EMAIL"),
-                10.verticalSpace,
+                5.verticalSpace,
                 CustomTextFormField(
                   controller: emailController,
                   hintText: "Email",
                   prefixIcon: Icons.email,
                 ),
-                10.verticalSpace,
+                5.verticalSpace,
 
                 textfoamlabel("PASSWORD"),
-                10.verticalSpace,
+                5.verticalSpace,
                 CustomTextFormField(
                   controller: passwordController,
                   hintText: "Password",
@@ -67,7 +68,9 @@ class _SigninState extends State<Signin> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => const ForgotPasswordScreen());
+                    },
                     child: Text(
                       "Forgot Password?",
                       style: TextStyle(fontSize: 15.sp, color: golden),
@@ -75,7 +78,7 @@ class _SigninState extends State<Signin> {
                   ),
                 ),
 
-                10.verticalSpace,
+                5.verticalSpace,
                 CustomButton(
                   text: "LOG IN",
                   onPressed: () async {

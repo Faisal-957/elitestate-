@@ -44,10 +44,10 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-          debugShowCheckedModeBanner: true,
+          debugShowCheckedModeBanner: false,
 
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: BottomNavScreen(),
+          home: Splashscreen(),
         );
       },
     );

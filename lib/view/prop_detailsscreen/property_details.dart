@@ -37,12 +37,18 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ///// image/////////
               buildImageHeader(context, images: property.images),
               const SizedBox(height: 16),
+              //// title and price //////////
               buildTitleAndPrice(property),
+              ////// row bath,bed,area,/////////
               const SizedBox(height: 16),
+
               buildStatsRow(property),
+              ////////// icon phone chat name //////////
               const SizedBox(height: 8),
+
               buildOwnerRow(
                 ownerName: property.ownerName,
                 onCall: () => showDialog(
@@ -68,6 +74,7 @@ class _PropertyDetailsScreenState extends State<PropertyDetailsScreen> {
                 ),
               ),
               const SizedBox(height: 8),
+              ////////////// description///////////
               buildDescription(property),
               const SizedBox(height: 16),
               isOwner
